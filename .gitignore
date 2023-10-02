@@ -1,2 +1,6 @@
 genCerts/**
 *.*~
+*.csr
+*.key
+*.crt
+*.srl
