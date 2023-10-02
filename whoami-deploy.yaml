@@ -1,0 +1,33 @@
+#copied from https://medium.com/@geraldcroes/kubernetes-traefik-101-when-simplicity-matters-957eeede2cf8
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whoami-deployment
+  namespace: who
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: whoami
+  template:
+    metadata:
+      labels:
+        app: whoami
+    spec:
+      containers:
+      - name: whoami-container
+        image: containous/whoami:latest
+        ports:
+        - containerPort: 443
+        args: ["--key", "/etc/secret-volume/tls.key", "--cert", "/etc/secret-volume/tls.crt", "--port", "443"]
+        volumeMounts:
+          # name must match the volume name below
+          - name: secret-volume
+            mountPath: /etc/secret-volume
+            #readOnly: true
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: who-secret
+
+

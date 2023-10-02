@@ -1,0 +1,41 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingressroutetls
+  namespace: who
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`vdi-rh-21`) && PathPrefix(`/who`)
+    kind: Rule
+    middlewares:
+    - name: pass-client-cert
+      namespace: who
+    - name: stripprefix
+      namespace: who
+    services:
+    - name: whoami-service
+      port: 443
+#  tls: # This route uses TLS
+ #   certResolver: myresolver
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: pass-client-cert
+  namespace: who
+spec:
+  passTLSClientCert:
+    pem: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: stripprefix
+  namespace: who
+
+spec:
+  stripPrefix:
+    prefixes:
+      - /who

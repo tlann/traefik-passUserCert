@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: whoami-service
+  namespace: who
+spec:
+  ports:
+#  - name: http
+#    targetPort: 80
+#    port: 80
+#- protocol: TCP
+  - name: websecure
+    port: 443
+    targetPort: 443
+  selector:
+    app: whoami
